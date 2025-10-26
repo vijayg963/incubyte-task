@@ -1,46 +1,103 @@
 import { useState } from 'react';
+import { add } from './stringCalculator';
 
 const App = () => {
   const [input, setInput] = useState('');
-  const [result] = useState(null);
+  const [result, setResult] = useState<number | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleCalculate = () => {};
+  const handleCalculate = () => {
+    setError(null);
+    try {
+      const value = add(input);
+      setResult(value);
+    } catch (err: Error | unknown) {
+      setResult(null);
+      setError((err as Error)?.message ?? 'Invalid input');
+    }
+  };
 
   return (
-    <div style={{ padding: '20px', backgroundColor: '#fff', color: '#aaa' }}>
-      <img
-        src='https://images.unsplash.com/photo-1594352161389-11756265d1b5?q=80&w=2574&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D'
-        width={600}
-        height={400}
-      />
+    <div
+      style={{
+        padding: '20px',
+        backgroundColor: '#fff',
+        color: '#222',
+        fontFamily: 'Arial, sans-serif',
+      }}
+    >
+      <header>
+        <h1>String Calculator</h1>
+      </header>
 
-      <h2>String Calculator</h2>
+      <main id="main-content" role="main">
+        <img
+          src="https://images.unsplash.com/photo-1594352161389-11756265d1b5?q=80&w=2574&auto=format&fit=crop"
+          width={600}
+          height={400}
+          alt="Abstract calculator background"
+          style={{ maxWidth: '100%', height: 'auto' }}
+        />
 
-      <h1 style={{ fontSize: '20px' }}>Enter numbers</h1>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleCalculate();
+          }}
+          aria-labelledby="calculator-heading"
+        >
+          <h2 id="calculator-heading" style={{ fontSize: '1.25rem', marginTop: '1rem' }}>
+            Enter numbers
+          </h2>
 
-      <textarea
-        style={{ margin: '10px 0', color: '#aaa' }}
-        placeholder='Enter numbers'
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-      />
+          <label htmlFor="number-input" style={{ display: 'block', marginTop: '8px' }}>
+            Numbers to calculate (comma, newline allowed). Use custom delimiter with <code>//delim\n</code>
+          </label>
+          <textarea
+            id="number-input"
+            style={{
+              margin: '10px 0',
+              color: '#222',
+              width: '100%',
+              minHeight: '100px',
+              fontSize: '1rem',
+            }}
+            placeholder="e.g. 1,2,3 or //;⏎1;2"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+          />
 
-      <div
-        onClick={handleCalculate}
-        style={{
-          padding: '10px',
-          backgroundColor: '#008cba',
-          color: '#fff',
-          border: 'none',
-        }}>
-        Calculate
-      </div>
+          <button
+            type="submit"
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#006f9a',
+              color: '#fff',
+              border: 'none',
+              cursor: 'pointer',
+              borderRadius: '4px',
+            }}
+          >
+            Calculate
+          </button>
+        </form>
 
-      {result !== null && <p style={{ color: 'green' }}>Result: {result}</p>}
+        {result !== null && (
+          <p style={{ color: 'green', marginTop: '1rem' }} role="status">
+            Result: {result}
+          </p>
+        )}
 
-      <div role='alert'>
-        <p>Make sure you enter numbers correctly!</p>
-      </div>
+        {error && (
+          <div role="alert" aria-live="assertive" style={{ marginTop: '1rem', color: '#b00020' }}>
+            <p>{error}</p>
+          </div>
+        )}
+
+        <p style={{ marginTop: '1rem', color: '#444' }}>
+          Tip: press <kbd>Tab</kbd> to navigate, press <kbd>Enter</kbd> to submit.
+        </p>
+      </main>
     </div>
   );
 };
