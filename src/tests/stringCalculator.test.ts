@@ -15,7 +15,7 @@ describe('String Calculator - basic', () => {
   });
 
   test('supports custom delimiters like //;\\n1;2', () => {
-  expect(add('//;\\n1;2')).toBe(3);
+  expect(add('//;\n1;2')).toBe(3);
 });
 });
 
